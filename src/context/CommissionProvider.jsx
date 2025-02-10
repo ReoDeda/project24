@@ -1,71 +1,68 @@
 import React, { createContext, useState, useEffect } from "react";
+import { FaBox, FaYandex, FaShoppingBag } from "react-icons/fa";
 
-// Создаём контекст
 export const CommissionContext = createContext();
-
-// Начальные данные (если localStorage пуст)
-const initialData = [
-  {
-    platform: "OZON",
-    commission: "19%",
-    logistics: [
-      { label: "1л", value: "76 ₽" },
-      { label: "Доп", value: "12 ₽" }
-    ],
-    lastMile: "5.5%",
-    district: "0 ₽",
-    acquiring: "1.5%",
-    processing: "30 ₽",
-    tax: "7%",
-    additional: "1%",
-    packaging: "30 ₽"
-  },
-  {
-    platform: "Yandex",
-    commission: "18%",
-    logistics: "4.5%",
-    lastMile: "0 ₽",
-    district: "10 ₽",
-    acquiring: "1.3%",
-    processing: "30 ₽",
-    tax: "7%",
-    additional: "1%",
-    packaging: "30 ₽"
-  },
-  {
-    platform: "WB",
-    commission: "18.5%",
-    logistics: [
-      { label: "1л", value: "50.75 ₽" },
-      { label: "Доп", value: "12.33 ₽" }
-    ],
-    lastMile: "0 ₽",
-    district: "0 ₽",
-    acquiring: "0%",
-    processing: "30 ₽",
-    tax: "7%",
-    additional: "1%",
-    packaging: "30 ₽"
-  }
-];
 
 export const CommissionProvider = ({ children }) => {
   const [commissionData, setCommissionData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // Флаг загрузки
 
-  // Загружаем данные из localStorage или берём начальные
   useEffect(() => {
     const storedData = localStorage.getItem("commissionData");
     if (storedData) {
       setCommissionData(JSON.parse(storedData));
     } else {
-      setCommissionData(initialData); // Загружаем дефолтные данные
-      localStorage.setItem("commissionData", JSON.stringify(initialData)); // Сохраняем в хранилище
+      setCommissionData([
+        {
+          platform: "OZON",
+          icon: <FaBox className="text-blue-500 text-lg" />,
+          commission: "19%",
+          logistics: [
+            { label: "1л", value: "76 ₽" },
+            { label: "Доп", value: "12 ₽" }
+          ],
+          lastMile: "5.5%",
+          district: "0 ₽",
+          acquiring: "1.5%",
+          processing: "30 ₽",
+          tax: "7%",
+          additional: "1%",
+          packaging: "30 ₽"
+        },
+        {
+          platform: "Yandex",
+          icon: <FaYandex className="text-yellow-500 text-lg" />,
+          commission: "18%",
+          logistics: [{ label: "Стандарт", value: "4.5%" }],
+          lastMile: "0 ₽",
+          district: "Тарифная сетка", // Кнопка вместо 10 ₽
+          acquiring: "1.3%",
+          processing: "30 ₽",
+          tax: "7%",
+          additional: "1%",
+          packaging: "30 ₽"
+        },
+        {
+          platform: "WB",
+          icon: <FaShoppingBag className="text-purple-500 text-lg" />,
+          commission: "18.5%",
+          logistics: [
+            { label: "1л", value: "50.75 ₽" },
+            { label: "Доп", value: "12.33 ₽" }
+          ],
+          lastMile: "0 ₽",
+          district: "0 ₽",
+          acquiring: "0%",
+          processing: "30 ₽",
+          tax: "7%",
+          additional: "1%",
+          packaging: "30 ₽"
+        }
+      ]);
     }
-    setIsLoading(false);
+    setIsLoading(false); // Данные загружены
   }, []);
 
-  // Автоматическое сохранение в localStorage
   useEffect(() => {
     if (!isLoading) {
       localStorage.setItem("commissionData", JSON.stringify(commissionData));
